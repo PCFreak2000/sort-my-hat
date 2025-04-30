@@ -1,3 +1,4 @@
+use leptos::tachys::renderer::dom::Element;
 use rand::prelude::*;
 
 fn main() {
@@ -30,54 +31,48 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen(start)]
 fn start() {
     let document = web_sys::window().unwrap().document().unwrap();
-    let canvas = document.get_element_by_id("canvas").unwrap();
+    let canvas: web_sys::Element = document.get_element_by_id("canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
         .dyn_into::<web_sys::HtmlCanvasElement>()
         .map_err(|_| ())
         .unwrap();
-
-    let context = canvas
+    let context: web_sys::CanvasRenderingContext2d = canvas
         .get_context("2d")
         .unwrap()
         .unwrap()
         .dyn_into::<web_sys::CanvasRenderingContext2d>()
         .unwrap();
 
-    context.begin_path();
 
-    // Draw the outer circle.
-    context
-        .arc(75.0, 75.0, 50.0, 0.0, f64::consts::PI * 2.0)
-        .unwrap();
 
-    // Draw the mouth.
-    context.move_to(110.0, 75.0);
-    context.arc(75.0, 75.0, 35.0, 0.0, f64::consts::PI).unwrap();
+    let mut rng = rand::rng();
+    let mut nums: Vec<i16> = (1..1000).collect();
+    nums.shuffle(&mut rng);
+    let array: &[i16] = &nums;
 
-    // Draw the left eye.
-    context.move_to(65.0, 65.0);
-    context
-        .arc(60.0, 65.0, 5.0, 0.0, f64::consts::PI * 2.0)
-        .unwrap();
 
-    // Draw the right eye.
-    context.move_to(95.0, 65.0);
-    context
-        .arc(90.0, 65.0, 5.0, 0.0, f64::consts::PI * 2.0)
-        .unwrap();
-
-    context.move_to(50.0, 50.0);
-    context.set_fill_style_str("rgb( 250,50,100)");
-
-    context.fill_rect(50., 50., 50., 20.);
-
-    context.move_to(0., 0.);
-    context.line_to(500., 500.);
-
-    context.stroke();
+    visualize_array(array, canvas, context);
 }
 
 fn rgb_string(r: u8, g: u8, b: u8) -> String {
     let output = format!("rgb({},{},{})", r, g, b);
     output
 }
+
+
+
+fn visualize_array(array: &[i16], canvas: web_sys::HtmlCanvasElement, context: web_sys::CanvasRenderingContext2d) {
+   
+    let draw_width: f64 = canvas.width() as f64 / array.len() as f64;
+    let height_amplifier: f64 = 450.0 / array.len() as f64;
+    let y: f64 = canvas.height() as f64;
+
+    for (index, integer) in array.iter().enumerate() {
+        let x: f64 = index as f64 * draw_width;
+        let height = *integer as f64 * height_amplifier;
+
+        context.fill_rect(x, y, draw_width, -height);
+    }
+}
+
+
