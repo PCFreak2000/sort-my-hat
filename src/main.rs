@@ -78,12 +78,13 @@ fn visualize_array(
 fn test_insertion_sort(){
     let mut rng = rand::rng();
     let mut nums: Vec<i16> = (1..10).collect();
-    let sorted_array: &mut Vec<i16> = &mut(nums.clone());
+
+    let expected_sorted_array = nums.clone();
     nums.shuffle(&mut rng);
-    let array: &mut Vec<i16> = &mut nums;
-    insertion_sort(array);
+
+    let actual_sorted_array = insertion_sort(&nums);
     
-    assert!(array==sorted_array);
+    assert!(actual_sorted_array == expected_sorted_array);
 
 }
 
