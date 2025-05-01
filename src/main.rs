@@ -47,10 +47,10 @@ fn start() {
     let mut rng = rand::rng();
     let mut nums: Vec<i16> = (1..1000).collect();
     nums.shuffle(&mut rng);
-    let array: &mut Vec<i16> = &mut nums;
-    dbg!(insertion_sort(array));
 
-    visualize_array(array, canvas, context);
+    let sorted_array = insertion_sort(&nums);
+
+    visualize_array(&sorted_array, canvas, context);
 }
 
 fn _rgb_string(r: u8, g: u8, b: u8) -> String {
@@ -59,7 +59,7 @@ fn _rgb_string(r: u8, g: u8, b: u8) -> String {
 }
 
 fn visualize_array(
-    array: &mut Vec<i16>,
+    array: &Vec<i16>,
     canvas: web_sys::HtmlCanvasElement,
     context: web_sys::CanvasRenderingContext2d,
 ) {
@@ -87,17 +87,21 @@ fn test_insertion_sort(){
 
 }
 
-fn insertion_sort(array: &mut Vec<i16>) {
-    for i in 0..array.len() {
-        let key: i16 = array[i];
+fn insertion_sort(array: &Vec<i16>) -> Vec<i16> {
+    let mut sorted_array = array.clone();
+
+    for i in 0..sorted_array.len() {
+        let key: i16 = sorted_array[i];
         let mut j: i16 = i as i16- 1;
 
-        while j >= 0 && array[j as usize] > key {  
+        while j >= 0 && sorted_array[j as usize] > key {  
 
-            array[(j+1) as usize] = array[j as usize];
+            sorted_array[(j+1) as usize] = sorted_array[j as usize];
             j = j - 1;
         }
         
-        array[(j+1) as usize] = key;
+        sorted_array[(j+1) as usize] = key;
     }
+
+    sorted_array
 }
